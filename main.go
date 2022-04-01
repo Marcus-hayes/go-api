@@ -6,18 +6,25 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
 )
 
+func ping(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, gin.H{"Message": "Pong"})
+}
+
 func getDirtyJoke(c *gin.Context) {
-	jokeURL, ok := os.LookupEnv("JOKE_BASE_URL")
+	jokeURL, ok := os.LookupEnv("JOKE_API")
 	if !ok {
-		fmt.Printf("Error: %v", ok)
+		fmt.Printf("Error: No Joke API designated. Assuming local run, setting environment variable now \n")
+		jokeUrl := "https://v2.jokeapi.dev/joke"
+		os.Setenv("JOKE_API", jokeUrl)
 	}
-	jokeURL += "Any"
+	jokeURL += "/Any"
 	resp, err := http.Get(jokeURL)
 	if err != nil {
 		fmt.Print(err.Error())
@@ -34,12 +41,19 @@ func getDirtyJoke(c *gin.Context) {
 
 func getMovieByTitle(c *gin.Context) {
 	title := c.Param("title")
-	omdbURL, ok := os.LookupEnv("OMDB_BASE_URL")
+
+	omdbURL, ok := os.LookupEnv("MOVIE_API")
 	if !ok {
-		fmt.Printf("Error: %v", ok)
+		fmt.Printf("Error: No Movie API designated. Assuming local run, setting environment variable now \n")
+		movieUrl := "http://www.omdbapi.com/?"
+		os.Setenv("MOVIE_API", movieUrl)
 	}
 
-	omdbURL += "&t=" + title
+	config, err := config.InitializeViper("./config/")
+	if err != nil {
+		log.Fatal("Unable to load config:", err)
+	}
+	omdbURL += "apikey=" + config.MOVIE_API_KEY + "&t=" + title
 
 	resp, err := http.Get(omdbURL)
 	if err != nil {
@@ -57,15 +71,17 @@ func getMovieByTitle(c *gin.Context) {
 }
 
 func main() {
-	cliConfig := os.Args
-	config.ConfigEnv(cliConfig)
-	hostURL, ok := os.LookupEnv("HTTP_URL")
+	port, ok := os.LookupEnv("HTTP_PORT")
+
 	if !ok {
-		fmt.Printf("Error: %v", ok)
+		fmt.Printf("Error: No HTTP Port designated. Defaulting to environment to gin default (:8080) \n")
+		port = ":8080"
+		os.Setenv("HTTP_PORT", port)
 	}
 
 	router := gin.Default()
+	router.GET("/", ping)
 	router.GET("/joke", getDirtyJoke)
 	router.GET("/movie/:title", getMovieByTitle)
-	router.Run(hostURL)
+	router.Run(port)
 }

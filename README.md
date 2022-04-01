@@ -1,7 +1,5 @@
-# GoLang Random API
+# GoLang Sandbox API
 
-## Adding whatever I find cool to this API
-## Also, keeping notes on tips and tricks
+This is a Sandbox GoLang API in which I will experiment with GoLang's functionalities, interact with other API's, and make notes on interesting findings.
 
-## JSON->Struc (Or vice-versa) Conversion
-## https://transform.tools/json-to-go
+[JSON-> Struct (Or vice-versa) Converter](https://transform.tools/json-to-go)
