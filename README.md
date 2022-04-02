@@ -6,9 +6,9 @@ This is a Sandbox GoLang API in which I will experiment with GoLang's functional
 
 ## Pre-Requisites:
 
-[Install GoLang](https://go.dev/doc/install)
-[Install Docker](https://www.docker.com/get-started/)
-[Windows Only - Install & Enable WSL](https://docs.microsoft.com/en-us/windows/wsl/install)
+- [Install GoLang](https://go.dev/doc/install)
+- [Install Docker](https://www.docker.com/get-started/)
+- [Windows Only - Install & Enable WSL](https://docs.microsoft.com/en-us/windows/wsl/install)
 
 ## Development
 The following commands will build an app container for the API using Docker Compose.
@@ -22,13 +22,13 @@ In Development
 
 ## API Reference
 /
-Example Endpoint Call:
-    curl http://localhost:8080/
+- Example Endpoint Call:
+    - curl http://localhost:8080/
 
 /joke
-Example Endpoint Call:
-    curl http://localhost:8080/joke
+- Example Endpoint Call:
+    - curl http://localhost:8080/joke
 
 /movie/{movie+title}
-Example Endpoint Call:
-    curl http://localhost:8080/movie/dances+with+wolves
+- Example Endpoint Call:
+    - curl http://localhost:8080/movie/dances+with+wolves
