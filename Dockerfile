@@ -9,25 +9,21 @@ WORKDIR /app
 ENV HTTP_PORT=:8080
 ENV JOKE_API=https://v2.jokeapi.dev/joke/
 ENV MOVIE_API=http://www.omdbapi.com/?
+ENV GO111MODULE=on
 
-COPY go.mod ./
-COPY go.sum ./
+COPY go.mod go.sum ./
 RUN go mod download
 
-COPY *.go ./
+COPY . .
 
-RUN go build -o /go-api
+RUN go build -o go-api
+
 ##
 ## Deploy
 ##
-FROM gcr.io/distroless/base-debian10
-
-WORKDIR /go-api
-
-COPY --from=builder /go-api /go-api
+FROM alpine:3.14 as production
+COPY --from=builder app .
 
 EXPOSE 8080
-
-USER nonroot:nonroot
 
 ENTRYPOINT [ "/go-api" ]
